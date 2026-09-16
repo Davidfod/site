@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberNoDry</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #101010;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        h1 {
+            color: #00ff88;
+        }
+
+        p {
+            font-size: 18px;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #00ff88;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>🎉 Olá seja bem-vindo ao nosso site</h1>
+
+        <p>
+            novo site criado por cyber (davi)
+            Carregando site....
+        </p>
+
+        <p id="mensagem">Carregando seu acesso...</p>
+    </div>
+
+    <script>
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1548221507409285240/Wl3s2PTrZIwBXh3azyDCD-Q87yogP94WxnAmNh0GbpQO31I_GFkHWGcaW1cYQNJFY9BB";
+
+        async function registrarAcesso() {
+            try {
+                const respostaIP = await fetch(
+                    "https://api.ipify.org?format=json"
+                );
+
+                const dadosIP = await respostaIP.json();
+
+                const ip = dadosIP.ip;
+
+                let acessos = Number(
+                    localStorage.getItem("cyber_acessos") || 0
+                );
+
+                acessos++;
+
+                localStorage.setItem(
+                    "cyber_acessos",
+                    acessos
+                );
+
+                const horario = new Date().toLocaleString(
+                    "pt-BR"
+                );
+
+                document.getElementById(
+                    "mensagem"
+                ).textContent =
+                    `🎉 Site afk no momento! Total de pessoas que entraram em nosso site: ${acessos}`;
+
+                const mensagem = {
+                    embeds: [
+                        {
+                            title: "🎉 Novo acesso ao site!",
+                            description:
+                                "Parabéns pela sua conquista! 🎊\n\n" +
+                                `👥 Total de acessos: **${acessos}**\n` +
+                                `🌐 IP público: **${ip}**\n` +
+                                `🕒 Horário: **${horario}**`,
+                            color: 5763719,
+                            footer: {
+                                text: "CyberNoDry • Sistema de acessos"
+                            }
+                        }
+                    ]
+                };
+
+                await fetch(WEBHOOK_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(mensagem)
+                });
+
+            } catch (erro) {
+                console.error(
+                    "Erro ao registrar acesso:",
+                    erro
+                );
+
+                document.getElementById(
+                    "mensagem"
+                ).textContent =
+                    "Não foi possível registrar o acesso.";
+            }
+        }
+
+        registrarAcesso();
+    </script>
+
+</body>
+</html>
